@@ -7,6 +7,7 @@ mod sphere;
 mod hittable_list;
 
 use camera::Camera;
+use rand::Rng;
 use vec3::{Vec3, Color};
 use ray::Ray;
 use hittable::Hittable;
@@ -69,13 +70,20 @@ fn main() {
 
     print_ppm_header(w, h);
 
+    let mut rng = rand::thread_rng();
     for j in (0..h).rev() {
+        eprint!("\rScanlines remaining: {}  ", j);
         for i in 0..w {
-            let u =(i as f64) / ((w - 1) as f64);
-            let v = (j as f64) / ((h - 1) as f64);
-            let ray = camera.get_ray(u, v);
-            let color = ray_color(&ray, &world);
+            let color = (0..100).map(|_| {
+                let u = (i as f64 + rng.gen::<f64>()) / ((w - 1) as f64);
+                let v = (j as f64 + rng.gen::<f64>()) / ((h - 1) as f64);
+                let ray = camera.get_ray(u, v);
+                ray_color(&ray, &world)
+            })
+            .fold(Color { x: 0.0, y: 0.0, z: 0.0 }, |a, b| a + b) / 100.0;
             print_ppm_pixel(&color);
         }
     }
+
+    eprintln!("Done");
 }

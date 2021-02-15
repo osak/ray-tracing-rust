@@ -6,5 +6,5 @@ base_name=$1
 ppm_file="images/$1.ppm"
 png_file="images/$1.png"
 
-cargo run > "${ppm_file}"
+cargo run --release > "${ppm_file}"
 convert "${ppm_file}" "${png_file}"

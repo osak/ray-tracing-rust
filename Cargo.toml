@@ -8,6 +8,7 @@ edition = "2018"
 
 [dependencies]
 impl_ops = "0.1.1"
+rand = "0.8"
 
 [[bin]]
 name = "ray-tracing-rust"
