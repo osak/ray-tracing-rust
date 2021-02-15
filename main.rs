@@ -5,6 +5,7 @@ mod hit_record;
 mod hittable;
 mod sphere;
 mod hittable_list;
+mod material;
 
 use camera::Camera;
 use rand::Rng;

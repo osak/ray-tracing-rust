@@ -1,14 +1,16 @@
 use crate::{hittable::Hittable, vec3::Vec3};
 use crate::ray::Ray;
 use crate::hit_record::HitRecord;
+use crate::material::Material;
 
-pub struct Sphere {
+pub struct Sphere<'a, M: Material + 'a> {
     pub center: Vec3,
     pub radius: f64,
+    pub material: &'a M,
 }
 
-impl Hittable for Sphere {
-    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
+impl<'a, M: Material + 'a> Hittable<M> for Sphere<'a, M> {
+    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord<M>> {
         // Solve a quadratic equation to find a real number `t` where
         // ray.origin() + t*ray.direction() is on this sphere.
         let v = ray.origin - self.center;
@@ -37,6 +39,6 @@ impl Hittable for Sphere {
 
         let hit_point = ray.at(root);
         let outward_normal = (hit_point - self.center) / self.radius;
-        return Some(HitRecord::new(ray, hit_point, &outward_normal, root))
+        return Some(HitRecord::new(ray, hit_point, &outward_normal, root, self.material))
     }
 }

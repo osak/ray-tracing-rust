@@ -1,5 +1,6 @@
 use impl_ops::*;
-use std::ops;
+use rand::Rng;
+use std::ops::{self, Range};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Vec3 {
@@ -53,6 +54,20 @@ impl_op_ex!(/ |lhs: &Vec3, rhs: f64| -> Vec3 {
 impl_op_ex!(/ |lhs: f64, rhs: &Vec3| -> Vec3 { rhs / lhs });
 
 impl Vec3 {
+    pub fn random_unit_vector() -> Self {
+        let mut rng = rand::thread_rng();
+        loop {
+            let p = Self {
+                x: rng.gen_range::<f64, Range<f64>>(-1.0..1.0),
+                y: rng.gen_range::<f64, Range<f64>>(-1.0..1.0),
+                z: rng.gen_range::<f64, Range<f64>>(-1.0..1.0),
+            };
+            if p.length() <= 1.0 {
+                return p;
+            }
+        }
+    }
+
     pub fn dot(&self, rhs: &Self) -> f64 {
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
