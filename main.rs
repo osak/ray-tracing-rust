@@ -1,12 +1,21 @@
 mod vec3;
 mod ray;
 mod camera;
+mod hit_record;
+mod hittable;
+mod sphere;
 
 use camera::Camera;
 use vec3::{Vec3, Color};
 use ray::Ray;
+use hittable::Hittable;
+use sphere::Sphere;
 
-fn ray_color(ray: &Ray) -> Color {
+fn ray_color(ray: &Ray, sphere: &Sphere) -> Color {
+    if let Some(hr) = sphere.hit(ray, 0.0, 1.0/0.0) {
+        return 0.5 * (hr.normal + Color { x: 1.0, y: 1.0, z: 1.0 });
+    }
+
     let unit_direction = ray.direction.unit_vector();
     let t = 0.5 * (unit_direction.y + 1.0); // Normalize to [0.0, 1.0]
     let white = Color { x: 1.0, y: 1.0, z: 1.0 };
@@ -44,6 +53,8 @@ fn main() {
     let w = 400;
     let h = ((w as f64) / aspect_ratio) as i32;
 
+    let sphere = Sphere { center: Vec3 { x: 0.0, y: 0.0, z: -1.0 }, radius: 0.5 };
+
     let look_from = Vec3 { x: 0.0, y: 0.0, z: 0.0 };
     let look_at = Vec3 { x: 0.0, y: 0.0, z: -1.0 };
     let up = Vec3 { x: 0.0, y: 1.0, z: 0.0 };
@@ -56,7 +67,7 @@ fn main() {
             let u =(i as f64) / ((w - 1) as f64);
             let v = (j as f64) / ((h - 1) as f64);
             let ray = camera.get_ray(u, v);
-            let color = ray_color(&ray);
+            let color = ray_color(&ray, &sphere);
             print_ppm_pixel(&color);
         }
     }

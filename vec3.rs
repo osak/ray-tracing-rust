@@ -1,3 +1,4 @@
+use impl_ops::*;
 use std::ops;
 
 #[derive(Debug, Clone, Copy)]
@@ -7,100 +8,56 @@ pub struct Vec3 {
     pub z: f64
 }
 
-impl ops::Add for Vec3 {
-    type Output = Self;
-
-    fn add(self, rhs: Vec3) -> Vec3 {
-        Self {
-            x: self.x + rhs.x,
-            y: self.y + rhs.y,
-            z: self.z + rhs.z,
-        }
+impl_op_ex!(+ |lhs: &Vec3, rhs: &Vec3| -> Vec3 {
+    Vec3 {
+        x: lhs.x + rhs.x,
+        y: lhs.y + rhs.y,
+        z: lhs.z + rhs.z,
     }
-}
+});
 
-impl ops::Sub for Vec3 {
-    type Output = Self;
-
-    fn sub(self, rhs: Vec3) -> Self::Output {
-        Self {
-            x: self.x - rhs.x,
-            y: self.y - rhs.y,
-            z: self.z - rhs.z,
-        }
+impl_op_ex!(- |lhs: &Vec3, rhs: &Vec3| -> Vec3 {
+    Vec3 {
+        x: lhs.x - rhs.x,
+        y: lhs.y - rhs.y,
+        z: lhs.z - rhs.z,
     }
-}
+});
 
-impl ops::Mul for Vec3 {
-    type Output = Self;
-
-    fn mul(self, rhs: Self) -> Self::Output {
-        Self {
-            x: self.x * rhs.x,
-            y: self.y * rhs.y,
-            z: self.z * rhs.z,
-        }
+impl_op_ex!(* |lhs: &Vec3, rhs: &Vec3| -> Vec3 {
+    Vec3 {
+        x: lhs.x * rhs.x,
+        y: lhs.y * rhs.y,
+        z: lhs.z * rhs.z,
     }
-}
+});
 
-impl ops::Mul<f64> for Vec3 {
-    type Output = Self;
-
-    fn mul(self, rhs: f64) -> Self::Output {
-        Self {
-            x: self.x * rhs,
-            y: self.y * rhs,
-            z: self.z * rhs,
-        }
+impl_op_ex!(* |lhs: &Vec3, rhs: f64| -> Vec3 {
+    Vec3 {
+        x: lhs.x * rhs,
+        y: lhs.y * rhs,
+        z: lhs.z * rhs,
     }
-}
+});
 
-impl ops::Mul<Vec3> for f64 {
-    type Output = Vec3;
+impl_op_ex!(* |lhs: f64, rhs: &Vec3| -> Vec3 { rhs * lhs });
 
-    fn mul(self, rhs: Vec3) -> Self::Output {
-        rhs * self
+impl_op_ex!(/ |lhs: &Vec3, rhs: f64| -> Vec3 {
+    Vec3 {
+        x: lhs.x / rhs,
+        y: lhs.y / rhs,
+        z: lhs.z / rhs,
     }
-}
+});
 
-impl ops::Div for Vec3 {
-    type Output = Self;
-
-    fn div(self, rhs: Self) -> Self::Output {
-        Self {
-            x: self.x / rhs.x,
-            y: self.y / rhs.y,
-            z: self.z / rhs.z,
-        }
-    }
-}
-
-impl ops::Div<f64> for Vec3 {
-    type Output = Self;
-
-    fn div(self, rhs: f64) -> Self::Output {
-        Self {
-            x: self.x / rhs,
-            y: self.y / rhs,
-            z: self.z / rhs,
-        }
-    }
-}
-
-impl ops::Div<Vec3> for f64 {
-    type Output = Vec3;
-
-    fn div(self, rhs: Vec3) -> Self::Output {
-        rhs / self
-    }
-}
+impl_op_ex!(/ |lhs: f64, rhs: &Vec3| -> Vec3 { rhs / lhs });
 
 impl Vec3 {
-    pub fn dot(self, rhs: Self) -> f64 {
+    pub fn dot(&self, rhs: &Self) -> f64 {
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
 
-    pub fn cross(self, rhs: Self) -> Self {
+    pub fn cross(&self, rhs: Self) -> Self {
         Self {
             x: self.y * rhs.z - self.z * rhs.y,
             y: self.z * rhs.x - self.x * rhs.z,
@@ -108,12 +65,16 @@ impl Vec3 {
         }
     }
 
-    pub fn unit_vector(self) -> Self {
+    pub fn unit_vector(&self) -> Self {
         self / self.length()
     }
 
-    pub fn length(self) -> f64 {
-        self.dot(self).sqrt()
+    pub fn length(&self) -> f64 {
+        self.length_squared().sqrt()
+    }
+
+    pub fn length_squared(&self) -> f64 {
+        self.dot(self)
     }
 }
 
