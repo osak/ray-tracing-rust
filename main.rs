@@ -82,10 +82,10 @@ fn main() {
         ]
     };
 
-    let look_from = Vec3 { x: 0.0, y: 0.0, z: 0.0 };
+    let look_from = Vec3 { x: -2.0, y: 2.0, z: 1.0 };
     let look_at = Vec3 { x: 0.0, y: 0.0, z: -1.0 };
     let up = Vec3 { x: 0.0, y: 1.0, z: 0.0 };
-    let camera = Camera::new(look_from, look_at, up, 90.0, aspect_ratio);
+    let camera = Camera::new(look_from, look_at, up, 20.0, aspect_ratio);
 
     print_ppm_header(w, h);
 

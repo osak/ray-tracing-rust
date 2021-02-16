@@ -112,6 +112,10 @@ impl Vec3 {
     pub fn length_squared(&self) -> f64 {
         self.dot(self)
     }
+
+    pub fn near_zero(&self) -> bool {
+        self.x.abs() < 1e-8 && self.y.abs() < 1e-8 && self.z.abs() < 1e-8
+    }
 }
 
 pub type Color = Vec3;

@@ -22,13 +22,17 @@ pub struct Lambertian {
 impl Material for Lambertian {
     fn scatter(&self, _ray: &Ray, hit_record: &HitRecord) -> Option<ScatterRecord> {
         let scatter_dir = hit_record.normal + Vec3::random_in_unit_sphere().unit_vector();
-        Some(ScatterRecord {
-            attenuation: self.albedo,
-            scattered_ray: Ray {
-                origin: hit_record.p,
-                direction: scatter_dir,
-            }
-        })
+        if scatter_dir.near_zero() {
+            None
+        } else {
+            Some(ScatterRecord {
+                attenuation: self.albedo,
+                scattered_ray: Ray {
+                    origin: hit_record.p,
+                    direction: scatter_dir,
+                }
+            })
+        }
     }
 }
 
