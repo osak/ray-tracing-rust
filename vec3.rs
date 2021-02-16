@@ -72,12 +72,16 @@ impl Vec3 {
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
 
-    pub fn cross(&self, rhs: Self) -> Self {
+    pub fn cross(&self, rhs: &Self) -> Self {
         Self {
             x: self.y * rhs.z - self.z * rhs.y,
             y: self.z * rhs.x - self.x * rhs.z,
             z: self.x * rhs.y - self.y * rhs.x,
         }
+    }
+
+    pub fn reflect(&self, norm: &Self) -> Self {
+        self - 2.0 * self.dot(norm) * norm
     }
 
     pub fn unit_vector(&self) -> Self {

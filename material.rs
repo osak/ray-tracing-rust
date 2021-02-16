@@ -29,3 +29,22 @@ impl Material for Lambertian {
         })
     }
 }
+
+
+pub struct Metal {
+    pub albedo: Vec3,
+}
+
+impl Material for Metal {
+    fn scatter(&self, ray: &Ray, hit_record: &HitRecord) -> Option<ScatterRecord> {
+        let scatter_dir = ray.direction.reflect(&hit_record.normal);
+        if scatter_dir.dot(&hit_record.normal) > 0.0 {
+            Some(ScatterRecord {
+                attenuation: self.albedo,
+                scattered_ray: Ray { origin: hit_record.p, direction: scatter_dir }
+            })
+        } else {
+            None
+        }
+    }
+}

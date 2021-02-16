@@ -14,7 +14,7 @@ use vec3::{Vec3, Color};
 use ray::Ray;
 use sphere::Sphere;
 use object_list::ObjectList;
-use material::Lambertian;
+use material::{Lambertian, Metal};
 
 fn ray_color(ray: &Ray, world: &ObjectList, depth: i32) -> Color {
     if depth <= 0 {
@@ -66,11 +66,19 @@ fn main() {
 
     let sphere1 = Sphere { center: Vec3 { x: 0.0, y: 0.0, z: -1.0 }, radius: 0.5 };
     let sphere2 = Sphere { center: Vec3 { x: 0.0, y: -100.5, z: -1.0 }, radius: 100.0 };
-    let material = Lambertian { albedo: Color { x: 0.1, y: 0.2, z: 0.5 } };
+    let sphere_left = Sphere { center: Vec3 { x: -1.0, y: 0.0, z: -1.0 }, radius: 0.5 };
+    let sphere_right = Sphere { center: Vec3 { x: 1.0, y: 0.0, z: -1.0 }, radius: 0.5 };
+    let material_ground = Lambertian { albedo: Color { x: 0.8, y: 0.8, z: 0.0 } };
+    let material = Lambertian { albedo: Color { x: 0.7, y: 0.3, z: 0.3 } };
+    let material_left = Metal { albedo: Color { x: 0.8, y: 0.8, z: 0.8 } };
+    let material_right = Metal { albedo: Color { x: 0.8, y: 0.6, z: 0.2 } };
+
     let world = ObjectList {
         objects: vec![
             Box::new(object::new(&sphere1, &material)),
-            Box::new(object::new(&sphere2, &material))
+            Box::new(object::new(&sphere2, &material_ground)),
+            Box::new(object::new(&sphere_left, &material_left)),
+            Box::new(object::new(&sphere_right, &material_right)),
         ]
     };
 

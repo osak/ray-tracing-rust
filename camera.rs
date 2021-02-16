@@ -18,8 +18,8 @@ impl Camera {
         let viewport_width = aspect_ratio * viewport_height;
 
         let w = (look_from - look_at).unit_vector();
-        let u = up.cross(w).unit_vector();
-        let v = w.cross(u).unit_vector();
+        let u = up.cross(&w).unit_vector();
+        let v = w.cross(&u).unit_vector();
 
         let horizontal = viewport_width * u;
         let vertical = viewport_height * v;
