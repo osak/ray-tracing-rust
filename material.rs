@@ -33,15 +33,17 @@ impl Material for Lambertian {
 
 pub struct Metal {
     pub albedo: Vec3,
+    pub fuzz: f64,
 }
 
 impl Material for Metal {
     fn scatter(&self, ray: &Ray, hit_record: &HitRecord) -> Option<ScatterRecord> {
-        let scatter_dir = ray.direction.reflect(&hit_record.normal);
-        if scatter_dir.dot(&hit_record.normal) > 0.0 {
+        let reflected = ray.direction.reflect(&hit_record.normal);
+        if reflected.dot(&hit_record.normal) > 0.0 {
+            let scatter_dir = reflected + self.fuzz * Vec3::random_in_unit_sphere();
             Some(ScatterRecord {
                 attenuation: self.albedo,
-                scattered_ray: Ray { origin: hit_record.p, direction: scatter_dir }
+                scattered_ray: Ray { origin: hit_record.p, direction: scatter_dir },
             })
         } else {
             None
