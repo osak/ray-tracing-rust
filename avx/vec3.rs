@@ -51,11 +51,7 @@ impl_op_ex!(/ |lhs: &Vec3, rhs: &Vec3| -> Vec3 {
 });
 
 impl_op_ex!(/ |lhs: &Vec3, rhs: f64| -> Vec3 {
-    unsafe {
-        Vec3 {
-            v: _mm256_div_pd(lhs.v, _mm256_set_pd(rhs, rhs, rhs, rhs)),
-        }
-    }
+    lhs * (1.0 / rhs)
 });
 
 impl Neg for Vec3 {
@@ -178,6 +174,34 @@ impl Vec3 {
             _mm256_store_pd(dst.as_mut_ptr(), self.v);
         }
         dst[3].abs() < 1e-8 && dst[2].abs() < 1e-8 && dst[1].abs() < 1e-8
+    }
+
+    pub fn sqrt(&self) -> Self {
+        unsafe {
+            Self {
+                v: _mm256_sqrt_pd(self.v)
+            }
+        }
+    }
+
+    pub fn clamp(&self, min: f64, max: f64) -> Self {
+        unsafe {
+            let mins = _mm256_set_pd(min, min, min, min);
+            let maxs = _mm256_set_pd(max, max, max, max);
+            Self {
+                v: _mm256_min_pd(_mm256_max_pd(self.v, mins), maxs)
+            }
+        }
+    }
+}
+
+impl From<Vec3> for (f64, f64, f64) {
+    fn from(v: Vec3) -> Self {
+        let mut dst = [0.0; 4];
+        unsafe {
+            _mm256_store_pd(dst.as_mut_ptr(), v.v);
+            (dst[3], dst[2], dst[1])
+        }
     }
 }
 

@@ -54,10 +54,7 @@ fn clamp(v: f64, min: f64, max: f64) -> f64 {
 }
 
 fn print_ppm_pixel(color: &Color) {
-    let r = (clamp(color.x().sqrt(), 0.0, 0.999) * 256.0) as i32;
-    let g = (clamp(color.y().sqrt(), 0.0, 0.999) * 256.0) as i32;
-    let b = (clamp(color.z().sqrt(), 0.0, 0.999) * 256.0) as i32;
-
+    let (r, g, b) = avx::color::to_ppm_color(color);
     println!("{} {} {}", r, g, b)
 }
 
