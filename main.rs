@@ -1,4 +1,6 @@
+mod avx;
 mod camera;
+mod fallback;
 mod hit_record;
 mod hittable;
 mod material;
