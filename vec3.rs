@@ -1,12 +1,20 @@
 use impl_ops::*;
 use rand::Rng;
-use std::ops::{self, Range};
+use std::ops::{self, Neg, Range};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Vec3 {
     pub x: f64,
     pub y: f64,
     pub z: f64
+}
+
+impl Neg for Vec3 {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        self * -1.0
+    }
 }
 
 impl_op_ex!(+ |lhs: &Vec3, rhs: &Vec3| -> Vec3 {
@@ -82,6 +90,15 @@ impl Vec3 {
 
     pub fn reflect(&self, norm: &Self) -> Self {
         self - 2.0 * self.dot(norm) * norm
+    }
+
+    pub fn refract(&self, norm: &Self, refraction_ratio: f64) -> Self {
+        let uv = self.unit_vector();
+        let cos_theta = (-uv).dot(norm).min(1.0);
+        let r_out_perp = refraction_ratio * (uv + cos_theta * norm);
+        let r_out_parallel = -(1.0 - r_out_perp.length_squared()).abs().sqrt() * norm;
+        
+        r_out_perp + r_out_parallel
     }
 
     pub fn unit_vector(&self) -> Self {

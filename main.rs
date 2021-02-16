@@ -14,7 +14,7 @@ use vec3::{Vec3, Color};
 use ray::Ray;
 use sphere::Sphere;
 use object_list::ObjectList;
-use material::{Lambertian, Metal};
+use material::{Dielectric, Lambertian, Metal};
 
 fn ray_color(ray: &Ray, world: &ObjectList, depth: i32) -> Color {
     if depth <= 0 {
@@ -70,8 +70,8 @@ fn main() {
     let sphere_right = Sphere { center: Vec3 { x: 1.0, y: 0.0, z: -1.0 }, radius: 0.5 };
     let material_ground = Lambertian { albedo: Color { x: 0.8, y: 0.8, z: 0.0 } };
     let material = Lambertian { albedo: Color { x: 0.7, y: 0.3, z: 0.3 } };
-    let material_left = Metal { albedo: Color { x: 0.8, y: 0.8, z: 0.8 }, fuzz: 0.3 };
-    let material_right = Metal { albedo: Color { x: 0.8, y: 0.6, z: 0.2 }, fuzz: 1.0 };
+    let material_left = Dielectric { refraction_index: 1.5 };
+    let material_right = Metal { albedo: Color { x: 0.8, y: 0.6, z: 0.2 }, fuzz: 0.0 };
 
     let world = ObjectList {
         objects: vec![
