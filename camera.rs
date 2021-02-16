@@ -1,12 +1,12 @@
 use std::f64::consts::PI;
 
-use crate::vec3::Vec3;
 use crate::ray::Ray;
+use crate::vec3::Vec3;
 
 pub struct Camera {
     origin: Vec3,
     horizontal: Vec3, // Horizontal vector from the left edge to the right edge
-    vertical: Vec3, // Vertical vector from the bottom edge to the top edge
+    vertical: Vec3,   // Vertical vector from the bottom edge to the top edge
     lower_left_corner: Vec3,
 }
 

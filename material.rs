@@ -1,8 +1,8 @@
 use rand::Rng;
 
-use crate::vec3::Vec3;
-use crate::ray::Ray;
 use crate::hit_record::HitRecord;
+use crate::ray::Ray;
+use crate::vec3::Vec3;
 
 pub struct ScatterRecord {
     pub attenuation: Vec3,
@@ -12,7 +12,6 @@ pub struct ScatterRecord {
 pub trait Material {
     fn scatter(&self, ray: &Ray, hit_record: &HitRecord) -> Option<ScatterRecord>;
 }
-
 
 // Lambertian material
 pub struct Lambertian {
@@ -30,12 +29,11 @@ impl Material for Lambertian {
                 scattered_ray: Ray {
                     origin: hit_record.p,
                     direction: scatter_dir,
-                }
+                },
             })
         }
     }
 }
-
 
 pub struct Metal {
     pub albedo: Vec3,
@@ -49,7 +47,10 @@ impl Material for Metal {
             let scatter_dir = reflected + self.fuzz * Vec3::random_in_unit_sphere();
             Some(ScatterRecord {
                 attenuation: self.albedo,
-                scattered_ray: Ray { origin: hit_record.p, direction: scatter_dir },
+                scattered_ray: Ray {
+                    origin: hit_record.p,
+                    direction: scatter_dir,
+                },
             })
         } else {
             None
@@ -57,14 +58,13 @@ impl Material for Metal {
     }
 }
 
-
 pub struct Dielectric {
     pub refraction_index: f64,
 }
 
 fn reflectance(cosine: f64, refraction_ratio: f64) -> f64 {
     let r0 = ((1.0 - refraction_ratio) / (1.0 + refraction_ratio)).powi(2);
-    r0 + (1.0-r0) * (1.0 - cosine).powi(5)
+    r0 + (1.0 - r0) * (1.0 - cosine).powi(5)
 }
 
 impl Material for Dielectric {
@@ -74,7 +74,9 @@ impl Material for Dielectric {
         } else {
             self.refraction_index
         };
-        let cos_theta = (-ray.direction.unit_vector()).dot(&hit_record.normal).min(1.0);
+        let cos_theta = (-ray.direction.unit_vector())
+            .dot(&hit_record.normal)
+            .min(1.0);
         let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
         let reflectance = reflectance(cos_theta, refraction_ratio);
         let mut rng = rand::thread_rng();
@@ -86,8 +88,11 @@ impl Material for Dielectric {
         };
 
         Some(ScatterRecord {
-            attenuation: Vec3 { x: 1.0, y: 1.0, z: 1.0 },
-            scattered_ray: Ray { origin: hit_record.p, direction },
+            attenuation: Vec3::new(1.0, 1.0, 1.0),
+            scattered_ray: Ray {
+                origin: hit_record.p,
+                direction,
+            },
         })
     }
 }
