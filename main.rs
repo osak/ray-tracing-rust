@@ -21,7 +21,7 @@ fn ray_color(ray: &Ray, world: &ObjectList, depth: i32) -> Color {
         return Color { x: 0.0, y: 0.0, z: 0.0 };
     }
 
-    if let Some((obj, hr)) = world.hit(ray, 0.0, 1.0/0.0) {
+    if let Some((obj, hr)) = world.hit(ray, 0.001, 1.0/0.0) {
         if let Some(sr) = obj.scatter(ray, &hr) {
             return sr.attenuation * ray_color(&sr.scattered_ray, world, depth - 1);
         }
